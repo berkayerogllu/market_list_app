@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
+from app.core.security import get_password_hash
 
 
 def get_user(db: Session, user_id: int):
@@ -14,19 +15,15 @@ def get_user_by_email(db: Session, email: str):
 def create_user(db: Session, user: UserCreate):
     """Creates new user and save to db"""
 
-    fake_hashed_password = user.password + "_secret_hash"
+    hashed_password = get_password_hash(user.password)
     
-  
-    db_user = User(email=user.email, hashed_password=fake_hashed_password)
-    
+    db_user = User(email=user.email, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    
     return db_user
 
 def update_user(db: Session, user_id: int, user_in: UserUpdate):
-    """update user"""
     db_user = get_user(db, user_id)
     if not db_user:
         return None
@@ -34,7 +31,7 @@ def update_user(db: Session, user_id: int, user_in: UserUpdate):
     update_data = user_in.model_dump(exclude_unset=True)
     
     if "password" in update_data:
-        update_data["hashed_password"] = update_data.pop("password") + "_secret_hash"
+        update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
         
     for field, value in update_data.items():
         setattr(db_user, field, value)
@@ -42,7 +39,6 @@ def update_user(db: Session, user_id: int, user_in: UserUpdate):
     db.commit()
     db.refresh(db_user)
     return db_user
-
 
 def delete_user(db: Session, user_id: int):
     """delete user"""
