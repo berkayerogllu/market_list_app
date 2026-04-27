@@ -12,4 +12,9 @@ class CategoryCreate(CategoryBase):
 class CategoryResponse(CategoryBase):
     id: int
 
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = None
+    icon: Optional[str] = None
+    color_code: Optional[str] = None    
+
     model_config = {"from_attributes": True}

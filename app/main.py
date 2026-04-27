@@ -6,7 +6,7 @@ from app.models.list import ShoppingList
 from app.models.item import Item
 from app.models.category import Category
 from app.models.product import Product
-from app.api.routers import users, lists, items, auth
+from app.api.routers import users, lists, items, auth ,categories ,products
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,6 +16,8 @@ app.include_router(users.router)
 app.include_router(lists.router)
 app.include_router(items.router)
 app.include_router(auth.router)
+app.include_router(categories.router)
+app.include_router(products.router)
 
 @app.get("/")
 def read_root():
