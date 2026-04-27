@@ -4,6 +4,8 @@ from app.db.session import engine, Base
 from app.models.user import User
 from app.models.list import ShoppingList
 from app.models.item import Item
+from app.models.category import Category
+from app.models.product import Product
 from app.api.routers import users, lists, items, auth
 
 Base.metadata.create_all(bind=engine)
